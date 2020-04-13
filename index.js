@@ -5,11 +5,25 @@ const { ApolloServer, gql } = require('apollo-server');
 
 const typeDefs = gql`
 
+    enum Status {
+        LIKED
+        NOT_LIKED
+        INDIFFERENT
+    }
+
+    type Grains {
+        id: ID
+        name: String
+    }
+
     type Beer {
+        id: ID
         name: String
         color: String
         abv: Float
         rating: Int
+        grains: [Grains]
+        status: Status
     }
 
     type Query {
@@ -24,7 +38,8 @@ const beers = [
         name: 'Castle Danger Creame Ale',
         color: 'Light Amber',
         abv: '5.5',
-        rating: 10
+        rating: 10,
+        grains: [{ id: 1, name: 'Malt'}, { id: 2, name: 'Barley'}]
     },
     {
         name: 'Waconia Brewing Amber Ale',
