@@ -17,10 +17,10 @@ const typeDefs = gql`
     }
 
     type Beer {
-        id: ID
-        name: String
-        color: String
-        abv: Float
+        id: ID!
+        name: String!
+        color: String!
+        abv: Float!
         rating: Int
         grains: [Grains]
         status: Status
