@@ -28,13 +28,14 @@ const typeDefs = gql`
 
     type Query {
         beers: [Beer]
-
+        beer(id: ID): Beer
     }
 
 `
 //This is just dummy data
 const beers = [
     {
+        id: '123',
         name: 'Castle Danger Creame Ale',
         color: 'Light Amber',
         abv: '5.5',
@@ -42,6 +43,7 @@ const beers = [
         grains: [{ id: 1, name: 'Malt'}, { id: 2, name: 'Barley'}]
     },
     {
+        id: '456',
         name: 'Waconia Brewing Amber Ale',
         color: 'Amber',
         abv: '6.0',
@@ -53,6 +55,12 @@ const resolvers = {
     Query: {
         beers: () => {
             return beers;
+        },
+        beer: (obj, { id }, context, info) => {
+            const foundBeer = beers.find((beer) => {
+                return beer.id === id
+            })
+            return foundBeer;
         }
     }
 }
