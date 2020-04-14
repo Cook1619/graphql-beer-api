@@ -1,9 +1,12 @@
 const { ApolloServer, gql } = require("apollo-server");
-
+const { GraphQLScalarType } = require("graphql");
+const { Kind } = require("graphql/language");
 //Schema, is the the shape of the data, which is why is works with typescript so well
 //Defines all of the types of the data
 
 const typeDefs = gql`
+  scalar Date
+
   enum Status {
     LIKED
     NOT_LIKED
@@ -18,6 +21,7 @@ const typeDefs = gql`
   type Beer {
     id: ID!
     name: String!
+    releaseDate: Date
     color: String!
     abv: Float!
     rating: Int
@@ -37,6 +41,7 @@ const beers = [
     name: "Castle Danger Creame Ale",
     color: "Light Amber",
     abv: "5.5",
+    releaseDate: new Date("10-10-2014"),
     rating: 10,
     grains: [
       { id: 1, name: "Malt" },
@@ -46,6 +51,7 @@ const beers = [
   {
     id: "456",
     name: "Waconia Brewing Amber Ale",
+    releaseDate: new Date("1-10-2016"),
     color: "Amber",
     abv: "6.0",
     rating: 9,
@@ -64,6 +70,24 @@ const resolvers = {
       return foundBeer;
     },
   },
+  Date: new GraphQLScalarType({
+    name: "Date",
+    description: "Released date is...",
+    parseValue(value) {
+      //value from client
+      return new Date(value);
+    },
+    serialize(value) {
+      //value sent to client
+      return value.getTime();
+    },
+    parseLiteral(ast) {
+      if (ast.kind === Kind.INT) {
+        return new Date(ast.value);
+      }
+      return null;
+    },
+  }),
 };
 
 const server = new ApolloServer({
