@@ -27,6 +27,7 @@ const typeDefs = gql`
     rating: Int
     grains: [Grains]
     status: Status
+    brewery: String!
   }
 
   type Query {
@@ -34,6 +35,18 @@ const typeDefs = gql`
     beer(id: ID): Beer
   }
 `;
+
+const grains = [
+  {
+    id: "1234",
+    name: "Barley",
+  },
+  {
+    id: '234',
+    name: 'Malt2'
+  }
+];
+
 //This is just dummy data
 const beers = [
   {
@@ -44,9 +57,10 @@ const beers = [
     releaseDate: new Date("10-10-2014"),
     rating: 10,
     grains: [
-      { id: 1, name: "Malt" },
-      { id: 2, name: "Barley" },
+      { id: "1234" },
+      { id: "234" },
     ],
+    brewery: "Castle Danger",
   },
   {
     id: "456",
@@ -55,6 +69,11 @@ const beers = [
     color: "Amber",
     abv: "6.0",
     rating: 9,
+    grains: [
+      { id: "234" },
+      { id: "1234" },
+    ],
+    brewery: "Waconia Brewery",
   },
 ];
 
@@ -70,6 +89,19 @@ const resolvers = {
       return foundBeer;
     },
   },
+  Beer: {
+    grains: (obj, arg, context) => {
+      const grainIds = obj.grains.map((grain) => grain.id);
+      const filteredGrains = grains.filter((grain) => {
+        return grainIds.includes(grain.id);
+      });
+      return filteredGrains;
+    },
+  },
+  //   (obj, arg, context) => {
+  //     console.log("obj", obj)
+  //     return { id: "1234", name: 'malt'}
+  //   },
   Date: new GraphQLScalarType({
     name: "Date",
     description: "Released date is...",
